@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verification Details</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+
+    .container {
+      width: 50%;
+      margin: 50px auto;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+
+    input[type="text"], input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      background-color: #4CAF50;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button[disabled] {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .image-preview {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .image-preview img {
+      max-width: 200px;
+      max-height: 200px;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+
+    .file-preview {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .file-preview span {
+      font-size: 14px;
+      color: #333;
+    }
+
+    /* Progress Bar Style */
+    .progress-bar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .progress-bar div {
+      width: 100%;
+      height: 6px;
+      background-color: #ddd;
+      border-radius: 3px;
+      margin-right: 10px;
+      position: relative;
+    }
+
+    .progress-bar div.active {
+      background-color: #4CAF50;
+    }
+
+    .progress-bar div:last-child {
+      margin-right: 0;
+    }
+
+    /* Updated Step Indicator Styles */
+    .step-indicator-wrapper {
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .step-indicator {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 350px;
+      height: 6px;
+      background-color: #ddd;
+      border-radius: 3px;
+      margin-bottom: 10px;
+    }
+
+    .step-indicator div {
+      height: 6px;
+      background-color: #ccc;
+      border-radius: 3px;
+      flex-grow: 1;
+    }
+
+    .step-indicator div.active {
+      background-color: #4CAF50;
+    }
+
+    /* Active Steps */
+    .step-indicator div:nth-child(1) {
+      flex-grow: 1;
+    }
+
+    .step-indicator div:nth-child(2) {
+      flex-grow: 1;
+    }
+
+    .step-indicator div:nth-child(3) {
+      flex-grow: 1;
+    }
+
+    .step-indicator div:nth-child(4) {
+      flex-grow: 1;
+    }
+
+    .step-indicator div:nth-child(5) {
+      flex-grow: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+      <div class="active"></div>
+      <div class="active"></div>
+      <div class="active"></div>
+      <div class="active"></div>
+      <div></div>
+    </div>
+
+    <h2>Step 4: Verification Details</h2>
+
+    <form id="verificationForm">
+      <!-- Aadhar Number -->
+      <label for="aadhar">Aadhar Number (12 digits)</label>
+      <input type="text" id="aadhar" placeholder="Enter Aadhar number" required maxlength="12" pattern="\d{12}" title="Aadhar number should be 12 digits." oninput="validateAadhar()">
+
+      <!-- Upload Aadhar PDF -->
+      <label for="aadharPDF">Upload Aadhar Card (PDF)</label>
+      <input type="file" id="aadharPDF" accept="application/pdf" onchange="previewAadharPDF()" required>
+
+      <!-- PDF Preview -->
+      <div class="file-preview" id="pdfPreview"></div>
+
+      <!-- GST Number -->
+      <label for="gst">GST Number (if applicable)</label>
+      <input type="text" id="gst" placeholder="Enter GST number (optional)" pattern="^([0]{1}[1-9]{1}[A-Z]{1}[1-9]{1}[A-Z]{1}[0-9]{1}[A-Z]{1}[1-9]{1})$" title="Enter a valid GST number" oninput="validateGST()">
+
+      <!-- Upload Photo -->
+      <label for="photo">Upload Photo (JPG/JPEG)</label>
+      <input type="file" id="photo" accept="image/jpeg, image/jpg" onchange="previewImage()" required>
+
+      <!-- Image Preview -->
+      <div class="image-preview" id="imagePreview"></div>
+
+      <!-- Navigation Buttons -->
+      <div class="buttons">
+        <button type="button" id="prevButton" onclick="goToPrevious()">Previous</button>
+        <button type="button" id="nextButton" onclick="goToNext()" disabled>Next</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Validate Aadhar Number
+    function validateAadhar() {
+      const aadhar = document.getElementById("aadhar").value;
+      const nextButton = document.getElementById("nextButton");
+
+      if (aadhar.length === 12 && /^\d{12}$/.test(aadhar)) {
+        nextButton.disabled = false;
+      } else {
+        nextButton.disabled = true;
+      }
+    }
+
+    // Validate GST Number
+    function validateGST() {
+      const gst = document.getElementById("gst").value;
+      const gstPattern = /^([0]{1}[1-9]{1}[A-Z]{1}[1-9]{1}[A-Z]{1}[0-9]{1}[A-Z]{1}[1-9]{1})$/;
+      const nextButton = document.getElementById("nextButton");
+
+      if (!gst || gstPattern.test(gst)) {
+        nextButton.disabled = false;
+      } else {
+        nextButton.disabled = true;
+      }
+    }
+
+    // Preview Aadhar PDF and check size
+    function previewAadharPDF() {
+      const fileInput = document.getElementById("aadharPDF");
+      const pdfPreview = document.getElementById("pdfPreview");
+      const file = fileInput.files[0];
+
+      if (file && file.type === "application/pdf") {
+        const fileSize = file.size / 1024; // Size in KB
+        if (fileSize < 300 || fileSize > 400) {
+          alert("Aadhar PDF file size must be between 300KB and 400KB.");
+          fileInput.value = "";
+          pdfPreview.innerHTML = "";
+        } else {
+          pdfPreview.innerHTML = `<span>File Selected: ${file.name} (${fileSize.toFixed(2)} KB)</span>`;
+        }
+      } else {
+        alert("Please upload a valid PDF file.");
+        fileInput.value = "";
+        pdfPreview.innerHTML = "";
+      }
+    }
+
+    // Preview Image and check size
+    function previewImage() {
+      const fileInput = document.getElementById("photo");
+      const imagePreview = document.getElementById("imagePreview");
+      const file = fileInput.files[0];
+
+      if (file && (file.type === "image/jpeg" || file.type === "image/jpg")) {
+        const fileSize = file.size / 1024; // Size in KB
+        if (fileSize < 300 || fileSize > 400) {
+          alert("Image file size must be between 300KB and 400KB.");
+          fileInput.value = "";
+          imagePreview.innerHTML = "";
+        } else {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            imagePreview.innerHTML = ''; // Clear previous preview
+            imagePreview.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        }
+      } else {
+        alert("Please upload a valid JPG/JPEG image.");
+        fileInput.value = "";
+        imagePreview.innerHTML = "";
+      }
+    }
+
+    // Handle Navigation
+    function goToPrevious() {
+      window.location.href = "4-address-details.html"; // Navigate to the previous step
+    }
+
+    function goToNext() {
+      const verificationData = {
+        aadhar: document.getElementById("aadhar").value,
+        gst: document.getElementById("gst").value,
+        photo: document.getElementById("photo").files[0] ? document.getElementById("photo").files[0].name : null,
+        aadharPDF: document.getElementById("aadharPDF").files[0] ? document.getElementById("aadharPDF").files[0].name : null
+      };
+      localStorage.setItem("verificationData", JSON.stringify(verificationData));
+      alert("Proceeding to the next step!"); // Replace with actual navigation
+       window.location.href = "5-payment information.html"; // Uncomment for real navigation
+    }
+
+    // Attach validation on input
+    document.getElementById("verificationForm").addEventListener("input", function () {
+      validateAadhar();
+      validateGST();
+    });
+  </script>
+</body>
+</html>
